@@ -1,6 +1,7 @@
 const prisma = require("../Models/prisma");
 const customError = require("../utils/customError");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res, next) => {
   const { username, password, confirmpassword, email } = req.body;
@@ -23,6 +24,14 @@ const register = async (req, res, next) => {
         400
       );
     }
+
+    const existUser = await prisma.user.findUnique({
+      where: { username: username },
+    });
+    if (existUser) {
+      throw customError("This username already exist", 400);
+    }
+
     // hash password --> bcryptjs
     const hashedPassword = await bcrypt.hash(password, 8);
     const data = {
@@ -46,8 +55,44 @@ const register = async (req, res, next) => {
   }
 };
 
-const login = (req, res, next) => {
-  res.json({ message: "Please login to continue our website" });
+const login = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    // Validation
+    if (!(username && password)) {
+      throw customError("Please fill username and password", 400);
+    }
+
+    // find username in prisma.user
+    const targetUser = await prisma.user.findUnique({
+      where: { username: username },
+    });
+    if (!targetUser) {
+      throw customError("Invaid login, User not found", 400);
+    }
+
+    // check password
+    const passwordRight = await bcrypt.compare(password, targetUser.password);
+    if (!passwordRight) {
+      throw customError("Username or Password is incorrect", 400);
+    }
+
+    // create jwt-token
+    // make payload = {ID, Username}
+    // jwt.sign = {expiresIn: '7d'}
+
+    const payload = { id: targetUser.userId };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    console.log(token);
+
+    // response token
+
+    res.json({ token: token });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = { register, login };
