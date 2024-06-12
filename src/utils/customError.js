@@ -1,7 +1,7 @@
-const customError = (message, statusCode) => {
-  const error = new Error(message);
-  error.statusCode = statusCode;
-  return error;
+const customError = (detail) => {
+  const error = new Error(detail.message);
+  error.statusCode = detail.statusCode;
+  throw error;
 };
 
 module.exports = customError;

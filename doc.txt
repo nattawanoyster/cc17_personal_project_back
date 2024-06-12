@@ -1,0 +1,11 @@
+----- REGISTER
+POST /auth/register 
+BODY
+    username
+    email
+    password
+    confirmPassword
+RESPONSE
+    200 message
+    400 message
+    500 message

@@ -1,28 +1,15 @@
 const Joi = require("joi");
 
-const registerSchema = (registerSchema = Joi.object({
-  firstName: Joi.string().required().trim(),
-  lastName: Joi.string().required().trim(),
-  emailOrMobile: Joi.alternatives([
-    Joi.string().email({ tlds: false }),
-    Joi.string().pattern(/^[0-9]{10}$/),
-  ])
+const registerSchema = Joi.object({
+  username: Joi.string().required().trim(),
+  email: Joi.alternatives([Joi.string().email({ tlds: false })])
     .required()
     .strip(),
   password: Joi.string()
     .required()
-    .pattern(/^[0-9a-zA-Z]{5,}$/),
+    .trim()
+    .pattern(/^[0-9a-zA-Z]{1,20}$/),
   confirmPassword: Joi.string().required().valid(Joi.ref("password")).strip(),
-  //   email: Joi.string().default(Joi.ref("emailOrMobile")).forbidden(),
-  //   mobile: Joi.string().default(Joi.ref("emailOrMobile")).forbidden(),
-  email: Joi.forbidden().when("emailOrMobile", {
-    is: Joi.string().email({ tlds: false }),
-    then: Joi.string().default(Joi.ref("emailOrMobile")),
-  }),
-  mobile: Joi.forbidden().when("emailOrMobile", {
-    is: Joi.string().pattern(/^[0-9]{10}$/),
-    then: Joi.string().default(Joi.ref("emailOrMobile")),
-  }),
-}));
+});
 
 module.exports = { registerSchema };
