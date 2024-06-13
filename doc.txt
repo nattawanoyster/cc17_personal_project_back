@@ -9,3 +9,23 @@ RESPONSE
     200 message
     400 message
     500 message
+
+---- LOGIN
+POST/auth/login
+BODY
+    username
+    password
+RESPONSE
+    200 accessToken
+    400 message
+    500 message
+
+------ GET AUTENTICATED USER
+GET /auth/me
+HEADER
+    Authorization bearer acees_token
+RESPONSE
+    200 user
+    400 message
+    401 message
+    500 message

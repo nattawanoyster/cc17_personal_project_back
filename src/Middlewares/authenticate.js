@@ -1,18 +1,29 @@
+const jwtService = require("../services/jwt-service");
+const userService = require("../services/user-service");
 const customError = require("../utils/customError");
 
 const authenticate = async (req, res, next) => {
   try {
     // checking req.headers ==> is there authorization key?
     const authorization = req.headers.authorization;
-    if (!authorization) {
-      throw customError("unauthenticated", 401);
-    }
-    if (!authorization.startsWith("Bearer ")) {
-      throw customError("unauthenticated", 401);
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      customError({
+        message: "unauthenticated",
+        statusCode: 401,
+      });
     }
 
-    const token = authorization.split(" ")[1];
-    console.log(token);
+    const accesstoken = authorization.split(" ")[1];
+    const payload = jwtService.verify(accesstoken);
+
+    const user = await userService.findUserById(payload.id);
+    if (!user) {
+      customError({
+        message: "User is not found",
+        statusCode: 400,
+      });
+    }
+    req.user = user;
     next();
   } catch (error) {
     next(error);

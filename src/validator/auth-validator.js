@@ -12,4 +12,9 @@ const registerSchema = Joi.object({
   confirmPassword: Joi.string().required().valid(Joi.ref("password")).strip(),
 });
 
-module.exports = { registerSchema };
+const loginSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
+module.exports = { registerSchema, loginSchema };

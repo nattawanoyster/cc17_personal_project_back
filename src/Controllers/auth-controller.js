@@ -1,8 +1,33 @@
 const hashService = require("../services/hash-service");
+const jwtService = require("../services/jwt-service");
 const userService = require("../services/user-service");
 const customError = require("../utils/customError");
 
 const authController = {};
+
+// authController.register = async (req, res, next) => {
+//   try {
+//     const { username, email, password } = req.input;
+//     console.log("Register Input in Controller:", { username, email, password });
+
+//     const existUser = await userService.findUserByUsername(username);
+//     if (existUser) {
+//       return next(
+//         customError({ message: "Username already in use", statusCode: 400 })
+//       );
+//     }
+
+//     const hashedPassword = await hashService.hash(password);
+//     const userData = { username, email, password: hashedPassword };
+//     console.log("User Data to Create:", userData);
+
+//     await userService.createUser(userData);
+
+//     res.status(201).json({ message: "User Created" });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 authController.register = async (req, res, next) => {
   try {
@@ -10,7 +35,11 @@ authController.register = async (req, res, next) => {
     const existUser = await userService.findUserByUsername(data.username);
 
     if (existUser) {
-      customError({ message: "Username already in use", statusCode: 400 });
+      customError({
+        message: "Username already in use",
+        field: "username",
+        statusCode: 400,
+      });
     }
 
     data.password = await hashService.hash(data.password);
@@ -19,6 +48,38 @@ authController.register = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+authController.login = async (req, res, next) => {
+  try {
+    const existUser = await userService.findUserByUsername(req.input.username);
+    if (!existUser) {
+      customError({
+        message: "invalid credentials",
+        statusCode: 400,
+      });
+    }
+
+    const isMatch = await hashService.compare(
+      req.input.password,
+      existUser.password
+    );
+    if (!isMatch) {
+      customError({
+        message: "Password is wrong",
+        statusCode: 400,
+      });
+    }
+
+    const accessToken = jwtService.sign({ id: existUser.id });
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+authController.getMe = (req, res, next) => {
+  res.status(200).json({ user: req.user });
 };
 
 module.exports = authController;
