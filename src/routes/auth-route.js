@@ -10,8 +10,9 @@ const authenticate = require("../Middlewares/authenticate");
 const router = express.Router();
 
 router.post("/register", registerValidator, authController.register);
-// router.post("/login", loginValidator, authController.login);
-// router.get("/me", authenticate, authController.getMe);
+router.post("/login", loginValidator, authController.login);
+router.get("/me", authenticate, authController.getMe);
+
 router.get("/home-redvelvet", async (req, res, next) => {
   console.log("object");
   const data = await prisma.song.findMany();

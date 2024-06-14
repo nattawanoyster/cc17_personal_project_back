@@ -2,9 +2,7 @@ const Joi = require("joi");
 
 const registerSchema = Joi.object({
   username: Joi.string().required().trim(),
-  email: Joi.alternatives([Joi.string().email({ tlds: false })])
-    .required()
-    .strip(),
+  email: Joi.alternatives([Joi.string().email({ tlds: false })]).required(),
   password: Joi.string()
     .required()
     .trim()

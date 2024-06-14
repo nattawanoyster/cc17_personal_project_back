@@ -15,6 +15,7 @@ const authenticate = async (req, res, next) => {
 
     const accesstoken = authorization.split(" ")[1];
     const payload = jwtService.verify(accesstoken);
+    console.log(payload);
 
     const user = await userService.findUserById(payload.id);
     if (!user) {

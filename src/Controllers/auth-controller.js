@@ -43,6 +43,7 @@ authController.register = async (req, res, next) => {
     }
 
     data.password = await hashService.hash(data.password);
+    // console.log(data);
     await userService.createUser(data);
     res.status(201).json({ message: "user created" });
   } catch (error) {
@@ -52,6 +53,7 @@ authController.register = async (req, res, next) => {
 
 authController.login = async (req, res, next) => {
   try {
+    console.log(req.input);
     const existUser = await userService.findUserByUsername(req.input.username);
     if (!existUser) {
       customError({
@@ -70,8 +72,8 @@ authController.login = async (req, res, next) => {
         statusCode: 400,
       });
     }
-
-    const accessToken = jwtService.sign({ id: existUser.id });
+    // console.log(existUser);
+    const accessToken = jwtService.sign({ id: existUser.userId });
     res.status(200).json({ accessToken });
   } catch (error) {
     next(error);

@@ -12,6 +12,7 @@ const registerValidator = (req, res, next) => {
   // }
 
   const { confirmPassword, ...validInput } = value;
+  console.log(validInput);
   req.input = validInput;
   console.log("Validated Register Input:", req.input);
   next();

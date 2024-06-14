@@ -11,18 +11,17 @@ userService.createUser = async ({ username, email, password }) => {
   });
 };
 
-userService.findUserByUsername = async (username) => {
+userService.findUserById = async (userData) => {
   return await prisma.user.findUnique({
-    where: { username },
+    where: { userId: userData }, // userId ==> table in database || userData ==> name of the data from the database(can be any name)
   });
 };
 
+userService.findUserByUsername = (userData) =>
+  prisma.user.findUnique({
+    where: { username: userData },
+  });
 module.exports = userService;
-
-// userService.findUserByUsername = (username) =>
-//   prisma.user.findFirst({
-//     where: { username: username },
-//   });
 
 // userService.findUserById = (userId) =>
 //   prisma.user.findFirst({
