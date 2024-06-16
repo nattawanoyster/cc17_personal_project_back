@@ -14,45 +14,45 @@ datasource db {
 }
 
 model User {
-  userId        Int       @id@default(autoincrement()) 
-  username      String    @unique @db.VarChar(20)
-  email         String?    @unique // null or not null is fine == ?
-  mobile        String?   @db.VarChar(15)
-  password      String    @db.VarChar(100)
-  profileImage  String?
-  coverImage    String?
-  createdAt     DateTime  @default(now()) @db.Timestamp(0) // now == insert current time || no milisec == (0)
-  updatedAt     DateTime  @updatedAt @db.Timestamp(0) 
-
-  favsongs FavoriteSong[]
-  profile Profile[]
+  userId       Int            @id @default(autoincrement())
+  username     String         @unique @db.VarChar(20)
+  email        String?        @unique
+  mobile       String?        @db.VarChar(15)
+  password     String         @db.VarChar(100)
+  profileImage String?
+  coverImage   String?
+  createdAt    DateTime       @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime       @updatedAt @db.Timestamp(0)
+  
+  favSongs     FavoriteSong[]
+  profiles     Profile[]
 }
 
 model FavoriteSong {
-  favoriteSongID    Int    @id@default(autoincrement())
-  userId            Int
-  songId            Int
-  addedAt           DateTime @default(now()) @db.Timestamp(0)
+  favoriteSongID Int          @id @default(autoincrement())
+  userId         Int
+  songId         Int
+  addedAt        DateTime      @default(now()) @db.Timestamp(0)
 
-  favsong User @relation(fields: [favoriteSongID], references: [userId]) 
-  song Song @relation(fields: [songId], references: [songId])
+  favSongUser    User          @relation(fields: [userId], references: [userId])
+  favSong        Song          @relation(fields: [songId], references: [songId])
 }
 
 model Song {
-  songId            Int  @id@default(autoincrement())
-  spotifyId         String
-  title             String
-  artist            String
-  album             String
-
-  songs FavoriteSong[]
+  songId     Int            @id @default(autoincrement())
+  spotifyId    String
+  title        String
+  artist      String
+  album       String
+  coverImage  String?
   
+  songs      FavoriteSong[]
 }
 
 model Profile {
-  id                Int  @id@default(autoincrement())
-  userId            Int
-  username          String
+  id         Int            @id @default(autoincrement())
+  userId     Int
+  bio        String?
 
-  profile User @relation(fields: [userId], references: [userId])
+  profileUser User           @relation(fields: [userId], references: [userId])
 }

@@ -7,11 +7,17 @@ const authenticate = require("./src/Middlewares/authenticate");
 const notFoundMiddleware = require("./src/Middlewares/notFound");
 const errorMiddleware = require("./src/Middlewares/error-middleware");
 const cors = require("cors");
+const prisma = require("./src/Models/prisma");
 
 app.use(express.json());
 app.use(cors());
+
 // app.use("/", );
 app.use("/auth", authRoute);
+
+//! ##########################################
+
+//! ##########################################
 
 // app.use("/home", authenticate, homeRoute);
 
