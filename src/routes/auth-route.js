@@ -25,6 +25,8 @@ router.get("/home-aespa", async (req, res, next) => {
   res.status(200).json({ data });
 });
 
+module.exports = router;
+
 // Add song to favorites
 // router.post("/add-to-favorites", async (req, res) => {
 //   const { songId } = req.body;
@@ -64,8 +66,6 @@ router.get("/home-aespa", async (req, res, next) => {
 //     res.status(500).json({ error: "Failed to delete favorite song." });
 //   }
 // });
-
-module.exports = router;
 
 // router.get("/home-redvelvet", async (req, res, next) => {
 //   console.log("object");
